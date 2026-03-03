@@ -1,0 +1,137 @@
+:root{
+  --bg: #eef1f7;
+  --text: #1f2937;
+
+  --spacing-small: 8px;
+  --spacing-medium: 16px;
+  --spacing-large: 24px;
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+
+/* Barra superior */
+.top-header{
+  background: #27ae60;
+  padding: 28px 0;
+  text-align: center;
+}
+
+.top-header h1{
+  margin: 0;
+  color: #fff;
+  font-size: 52px;
+  font-weight: 800;
+}
+
+.page{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 48px var(--spacing-large);
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+/* Leyenda izquierda */
+.legend{
+  width: 260px;
+  margin-left: 40px;
+}
+
+.legend-title{
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.legend-item{
+  border: 2px solid #000;   /* recuadro negro */
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+}
+
+.dot{
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.high{ background: #ff5b5b; }
+.dot.medium{ background: #ffcc66; }
+.dot.low{ background: #4cd37a; }
+
+/* Zona derecha */
+.content{
+  flex: 1;
+}
+
+.content h2{
+  margin: 0 0 18px 0;
+  font-size: 26px;
+}
+
+/* Lista y tarjetas */
+.task-list{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.task-card{
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .task-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+}
+
+.task-card h3{
+  margin: 0;
+  font-size: 18px;
+}
+
+/* Etiqueta prioridad */
+.tag{
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid #e5e5e5;
+}
+
+.priority.high{ background: #ffe5e5; }
+.priority.medium{ background: #fff3d6; }
+.priority.low{ background: #e7f7ee; }
+
+/* Responsive: en móvil el menú pasa arriba */
+@media (max-width: 768px) {
+  main {
+    flex-direction: column;
+  }
+
+  aside {
+    width: 100%;
+  }
+}
