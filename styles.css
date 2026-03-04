@@ -18,7 +18,7 @@ body{
 
 /* Barra superior */
 .top-header{
-  background: #27ae60;
+  background: #000;
   padding: 28px 0;
   text-align: center;
 }
@@ -52,7 +52,7 @@ body{
 }
 
 .legend-item{
-  border: 2px solid #000;   /* recuadro negro */
+  border: 2px solid #000;
   border-radius: 10px;
   padding: 10px 12px;
   margin-bottom: 12px;
@@ -125,7 +125,7 @@ body{
 .priority.medium{ background: #fff3d6; }
 .priority.low{ background: #e7f7ee; }
 
-/* Responsive: en móvil el menú pasa arriba */
+/* Responsive: para visualización en el móvil */
 @media (max-width: 768px) {
   main {
     flex-direction: column;
@@ -135,3 +135,88 @@ body{
     width: 100%;
   }
 }
+
+/*Mejoras de diseño de lo que ya estaba hecho a partir de aquí */
+.top-header{
+  background: linear-gradient(180deg, #000 0%, #111 100%);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+}
+
+/* Ajustes de espaciado */
+.page{
+  padding-top: 40px;
+}
+
+.task-form{
+  display: grid;
+  grid-template-columns: 1fr 120px 110px;
+  gap: 10px;
+  margin: 12px 0 10px 0;
+  align-items: center;
+}
+
+.task-form input,
+.task-form select,
+.task-form button,
+.task-search{
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: #fff;
+  padding: 0 12px;
+  font-size: 14px;
+}
+
+.task-form input:focus,
+.task-form select:focus,
+.task-search:focus{
+  outline: none;
+  border-color: rgba(0,0,0,0.25);
+  box-shadow: 0 0 0 4px rgba(0,0,0,0.06);
+}
+
+.task-form button{
+  cursor: pointer;
+  font-weight: 700;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+
+.task-form button:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+.task-search{
+  width: 100%;
+  margin: 0 0 16px 0;
+}
+
+.task-card{
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+}
+
+.task-card h3{
+  font-size: 18px;
+}
+
+.task-delete{
+  border-radius: 999px;
+  padding: 8px 12px;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  background: rgba(220, 38, 38, 0.06);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.task-delete:hover{
+  background: rgba(220, 38, 38, 0.12);
+}
+
+@media (max-width: 768px){
+  .task-form{
+    grid-template-columns: 1fr;
+  }
+}
+/* Mejora diseño de la web hasta aquí */

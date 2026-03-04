@@ -34,29 +34,23 @@
     <section class="content">
       <h2>Lista de tareas</h2>
 
-      <div class="task-list">
-        <article class="task-card">
-          <h3>Reunión clientes</h3>
-          <div class="task-meta">
-            <span class="tag priority high">Alta</span>
-          </div>
-        </article>
+      <form id="task-form" class="task-form">
+        <input id="task-input" type="text" placeholder="Nueva tarea..." required />
 
-        <article class="task-card">
-          <h3>Llamar nuevo cliente</h3>
-          <div class="task-meta">
-            <span class="tag priority medium">Media</span>
-          </div>
-        </article>
+        <select id="task-priority" aria-label="Prioridad">
+          <option value="high">Alta</option>
+          <option value="medium" selected>Media</option>
+          <option value="low">Baja</option>
+        </select>
 
-        <article class="task-card">
-          <h3>Cancelar hora peluquería</h3>
-          <div class="task-meta">
-            <span class="tag priority low">Baja</span>
-          </div>
-        </article>
-      </div>
+        <button type="submit">Añadir</button>
+      </form>
+
+      <input id="task-search" class="task-search" type="text" placeholder="Buscar tarea..." />
+
+      <div id="task-list" class="task-list"></div>
     </section>
   </main>
 </body>
 </html>
+<script src="app.js"></script>
