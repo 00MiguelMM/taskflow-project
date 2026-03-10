@@ -1,0 +1,3 @@
+# EXPERIMENTOS CON IA EN PROGRAMACIÓN
+## INTRODUCCIÓN
+En este documento voy a registrar distintos experimentos realizados utilizando herramientas de inteligencia artificial, durante el desarrollo del proyecto TaskFlow. El objetivo es comparar cómo se resuelven ciertos problemas de programación con y sin asistencia de IA, analizando el tiempo invertido, la calidad del código y la comprensión del problema.
