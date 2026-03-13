@@ -65,3 +65,10 @@ Entre los estilos que identificó destacan:
 - efectos de interacción como `hover` y `focus` en botones
 
 Con esto pude comprobar que la IA también era capaz de analizar el archivo de estilos del proyecto y explicar cómo afectan al diseño de las tareas.
+
+### ¿En qué casos puede ser útil MCP en proyectos reales?
+MCP puede ser útil en proyectos reales porque permite que la inteligencia artificial tenga acceso directo a herramientas o información del propio proyecto.
+
+Por ejemplo, la IA podría leer archivos del proyecto, revisar código, buscar dónde se usa una función o ayudar a entender partes del programa que no tenemos muy claras. También podría conectarse con repositorios de código, APIs o bases de datos.
+
+Esto puede ayudar a los desarrolladores a trabajar más rápido y a entender mejor el código, sobre todo cuando el proyecto es grande o cuando estamos empezando y todavía no conocemos bien todo el proyecto.
