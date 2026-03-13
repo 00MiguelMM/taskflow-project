@@ -111,25 +111,57 @@ function createTaskCard(task) {
   list.appendChild(card);
 }
 
+/**
+ * Manejador del evento submit del formulario de tareas.
+ * Valida la entrada, previene duplicados y agrega la tarea si es válida.
+ */
 form.addEventListener("submit", (e) => {
-  e.preventDefault(); /*para evitar que la página cambie al actualizar*/
+  e.preventDefault(); // Previene el recargo de la página al enviar el formulario
 
+  // Obtiene el valor ingresado por el usuario y elimina espacios al inicio/final
   const text = input.value.trim();
+
+  // Validación: El texto no puede estar vacío
+  if (!text) {
+    // Enfoca el input si está vacío para avisar visualmente al usuario
+    input.focus();
+    return;
+  }
+
+  // Obtiene la prioridad seleccionada
   const priority = prioritySelect.value;
 
-  if (text === "") return;
+  // Validación: La prioridad debe ser una de las permitidas
+  if (!priority || !["high", "medium", "low"].includes(priority)) {
+    alert("Por favor selecciona una prioridad válida.");
+    prioritySelect.focus();
+    return;
+  }
 
+  // Crea el objeto tarea con un ID único
   const task = {
-    id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-    text,
-    priority,
+    id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+    text: text,
+    priority: priority,
   };
 
+  // Validación: Evita el registro de tareas duplicadas exactamente iguales
+  if (tasks.some(t => t.text === task.text && t.priority === task.priority)) {
+    alert("La tarea ya existe con la misma prioridad.");
+    input.focus();
+    return;
+  }
+
+  // Agrega la tarea a la lista en memoria
   tasks.push(task);
+  // Persiste la nueva lista de tareas en el almacenamiento
   saveTasks();
+  // Muestra la nueva tarea en la interfaz
   createTaskCard(task);
+  // Vuelve a aplicar el filtro actual de búsqueda
   applyFilter();
 
+  // Limpia el campo de entrada y lo enfoca para permitir añadir otra tarea
   input.value = "";
   input.focus();
 });
