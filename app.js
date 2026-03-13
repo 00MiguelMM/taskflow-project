@@ -7,9 +7,34 @@ function saveTasks() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 }
 
+
+/**
+ * Carga las tareas almacenadas desde localStorage.
+ * Si no hay datos, inicializa la lista de tareas como un array vacío.
+ * Maneja errores básicos al intentar convertir los datos desde JSON.
+ */
 function loadTasks() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  tasks = raw ? JSON.parse(raw) : [];
+  // Obtener el string JSON de tareas desde localStorage
+  const storedTasksJSON = localStorage.getItem(STORAGE_KEY);
+
+  // Si no hay datos almacenados, inicializar el array de tareas vacío
+  if (!storedTasksJSON) {
+    tasks = [];
+    return;
+  }
+
+  try {
+    // Intentar convertir el string JSON a un array de tareas
+    tasks = JSON.parse(storedTasksJSON);
+    // Comprobar que la variable es realmente un array
+    if (!Array.isArray(tasks)) {
+      tasks = [];
+    }
+  } catch (err) {
+    // Si ocurre un error al parsear, registrar el error y vaciar el array de tareas
+    console.error("Error al analizar los datos de las tareas:", err);
+    tasks = [];
+  }
 }
 
 const form = document.getElementById("task-form");
@@ -107,3 +132,4 @@ if (toggle) {
     document.documentElement.classList.toggle("dark");
   });
 }
+
