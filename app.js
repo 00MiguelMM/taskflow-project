@@ -5,6 +5,19 @@ let tasks = [];
 
 function saveTasks() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+/**
+ * Guarda la lista de tareas en localStorage.
+ * Serializa el array de tareas como JSON.
+ * @function saveTasks
+ */
+function saveTasks() {
+  try {
+    // Guardar las tareas en localStorage
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  } catch (error) {
+    // Manejo básico de errores al intentar guardar
+    console.error("Error saving tasks to localStorage:", error);
+  }
 }
 
 
@@ -13,26 +26,24 @@ function saveTasks() {
  * Si no hay datos, inicializa la lista de tareas como un array vacío.
  * Maneja errores básicos al intentar convertir los datos desde JSON.
  */
+/**
+ * Loads the task list from localStorage.
+ * Initializes as an empty array if no valid data is found or errors occur.
+ * Ensures the parsed data is always an array.
+ */
 function loadTasks() {
-  // Obtener el string JSON de tareas desde localStorage
-  const storedTasksJSON = localStorage.getItem(STORAGE_KEY);
+  const stored = localStorage.getItem(STORAGE_KEY);
 
-  // Si no hay datos almacenados, inicializar el array de tareas vacío
-  if (!storedTasksJSON) {
+  if (!stored) {
     tasks = [];
     return;
   }
 
   try {
-    // Intentar convertir el string JSON a un array de tareas
-    tasks = JSON.parse(storedTasksJSON);
-    // Comprobar que la variable es realmente un array
-    if (!Array.isArray(tasks)) {
-      tasks = [];
-    }
+    const parsed = JSON.parse(stored);
+    tasks = Array.isArray(parsed) ? parsed : [];
   } catch (err) {
-    // Si ocurre un error al parsear, registrar el error y vaciar el array de tareas
-    console.error("Error al analizar los datos de las tareas:", err);
+    console.error("Error parsing stored tasks:", err);
     tasks = [];
   }
 }
