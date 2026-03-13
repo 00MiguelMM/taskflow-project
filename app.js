@@ -136,11 +136,21 @@ form.addEventListener("submit", (e) => {
 
 loadTasks();
 
+/**
+ * Aplica el filtro de búsqueda a las tareas mostradas en la lista.
+ * Oculta aquellas que no coinciden con el texto ingresado en el campo de búsqueda.
+ */
 function applyFilter() {
+  // Obtiene y normaliza el valor de búsqueda: quita espacios y convierte a minúsculas.
   const q = search.value.trim().toLowerCase();
 
+  // Recorre todas las tarjetas de tarea existentes en la lista.
   for (const card of list.children) {
+    // Extrae el texto del título (h3) y lo transforma a minúsculas para comparaciones insensibles a mayúsculas/minúsculas.
     const text = card.querySelector("h3")?.textContent.toLowerCase() || "";
+
+    // Si el texto del título contiene la cadena de búsqueda, muestra la tarjeta;
+    // de lo contrario, la oculta.
     card.style.display = text.includes(q) ? "" : "none";
   }
 }
