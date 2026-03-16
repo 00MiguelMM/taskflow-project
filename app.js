@@ -51,6 +51,7 @@ function loadTasks() {
 
 const form = document.getElementById("task-form");
 const input = document.getElementById("task-input");
+const dateInput = document.getElementById("task-date");
 const prioritySelect = document.getElementById("task-priority");
 const categorySelect = document.getElementById("task-category");
 const list = document.getElementById("task-list");
@@ -85,8 +86,35 @@ function createTaskCard(task) {
   };
 
   const card = document.createElement("article");
-  card.className = "flex items-center justify-between bg-slate-100 dark:bg-slate-700 p-3 rounded mb-2 transition-all duration-1000 opacity-0 translate-y-10";
+  card.className = "flex items-center justify-between p-3 rounded mb-2 transition-all duration-1000 opacity-0 translate-y-10 border";
   card.dataset.id = task.id;
+  if (task.date) {
+    const today = new Date();
+    const dueDate = new Date(`${task.date}T00:00:00`);
+  
+    today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+  
+    const diffTime = dueDate - today;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+  
+    card.style.borderWidth = "2px";
+  
+    if (diffDays < 0) {
+      card.style.backgroundColor = "#fee2e2";
+      card.style.borderColor = "#ef4444";
+    } else if (diffDays <= 2) {
+      card.style.backgroundColor = "#fef3c7";
+      card.style.borderColor = "#f59e0b";
+    } else {
+      card.style.backgroundColor = "#f1f5f9";
+      card.style.borderColor = "#cbd5e1";
+    }
+  } else {
+    card.style.backgroundColor = "#f1f5f9";
+    card.style.borderColor = "#cbd5e1";
+    card.style.borderWidth = "1px";
+  }
 
   const leftSide = document.createElement("div");
   leftSide.className = "flex items-center gap-2";
@@ -219,6 +247,7 @@ form.addEventListener("submit", (e) => {
 
   const priority = prioritySelect.value;
   const category = categorySelect.value;
+  const date = dateInput.value;
 
   if (!priority || !["high", "medium", "low"].includes(priority)) {
     alert("Por favor selecciona una prioridad válida.");
@@ -234,6 +263,7 @@ form.addEventListener("submit", (e) => {
     text: text,
     priority: priority,
     category: category,
+    date: date,
     completed: false,
     createdAt: Date.now(),
   };
