@@ -235,6 +235,7 @@ form.addEventListener("submit", (e) => {
     priority: priority,
     category: category,
     completed: false,
+    createdAt: Date.now(),
   };
 
   if (tasks.some((t) => t.text === task.text && t.priority === task.priority)) {
@@ -244,8 +245,24 @@ form.addEventListener("submit", (e) => {
   }
 
   tasks.push(task);
+
+  tasks.sort((a, b) => {
+    const order = { high: 1, medium: 2, low: 3 };
+  
+    if (order[a.priority] !== order[b.priority]) {
+      return order[a.priority] - order[b.priority];
+    }
+  
+    return b.createdAt - a.createdAt;
+  });
+  
   saveTasks();
-  createTaskCard(task);
+  list.innerHTML = "";
+  
+  for (const task of tasks) {
+    createTaskCard(task);
+  }
+  
   applyFilter();
 
   input.value = "";
@@ -253,6 +270,14 @@ form.addEventListener("submit", (e) => {
 });
 
 loadTasks();
+
+tasks.sort((a, b) => {
+  const order = { high: 1, medium: 2, low: 3 };
+  if (order[a.priority] !== order[b.priority]) {
+    return order[a.priority] - order[b.priority];
+  }
+  return b.createdAt - a.createdAt;
+});
 
 for (const task of tasks) {
   createTaskCard(task);
