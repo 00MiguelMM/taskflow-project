@@ -3,15 +3,16 @@
 const STORAGE_KEY = "taskflow_tasks_v1";
 let tasks = [];
 
-function saveTasks() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+
 /**
  * Guarda la lista de tareas en localStorage.
  * Serializa el array de tareas como JSON.
  */
 function saveTasks() {
+  const serializedTasks = JSON.stringify(tasks);
+
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    localStorage.setItem(STORAGE_KEY, serializedTasks);
   } catch (error) {
     console.error("Error saving tasks to localStorage:", error);
   }
@@ -19,8 +20,14 @@ function saveTasks() {
 
 
 /**
- * Carga las tareas guardadas desde localStorage.
- * Si no hay datos válidos o se produce un error, inicializa un array vacío.
+ * Carga las tareas persistidas desde `localStorage` (clave `STORAGE_KEY`) y
+ * sincroniza la variable global `tasks`.
+ *
+ * @returns {void} No devuelve ningún valor; actualiza `tasks` en memoria.
+ *
+ * @throws {never} No propaga errores. Si no hay datos, el JSON es inválido o el
+ * valor almacenado no es un array, registra el error en consola y deja `tasks`
+ * como un array vacío.
  */
 function loadTasks() {
   const stored = localStorage.getItem(STORAGE_KEY);
