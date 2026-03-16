@@ -52,8 +52,11 @@ function loadTasks() {
 const form = document.getElementById("task-form");
 const input = document.getElementById("task-input");
 const prioritySelect = document.getElementById("task-priority");
+const categorySelect = document.getElementById("task-category");
 const list = document.getElementById("task-list");
 const search = document.getElementById("task-search");
+const filterCategory = document.getElementById("filter-category");
+const filterStatus = document.getElementById("filter-status");
 
 /**
  * Crea y añade al DOM una tarjeta visual para representar una tarea.
@@ -118,6 +121,9 @@ function createTaskCard(task) {
   const priorityTag = document.createElement("span");
   priorityTag.className = priority.class;
   priorityTag.textContent = priority.label;
+  const categoryTag = document.createElement("span");
+  categoryTag.className = "bg-blue-200 text-slate-800 px-2 py-1 rounded text-xs";
+  categoryTag.textContent = task.category || "Sin categoría";
 
   const deleteButton = document.createElement("button");
   deleteButton.className = "text-red-500 hover:text-red-700 font-medium";
@@ -153,6 +159,7 @@ function createTaskCard(task) {
   leftSide.appendChild(title);
 
   metaBar.appendChild(priorityTag);
+  metaBar.appendChild(categoryTag);
   metaBar.appendChild(deleteButton);
 
   card.appendChild(leftSide);
@@ -170,10 +177,29 @@ function createTaskCard(task) {
  */
 function applyFilter() {
   const q = search.value.trim().toLowerCase();
+  const selectedCategory = filterCategory.value;
+  const selectedStatus = filterStatus.value;
 
   for (const card of list.children) {
     const text = card.querySelector("h3")?.textContent.toLowerCase() || "";
-    card.style.display = text.includes(q) ? "" : "none";
+    const taskId = card.dataset.id;
+    const task = tasks.find((t) => t.id === taskId);
+
+    if (!task) {
+      card.style.display = "none";
+      continue;
+    }
+
+    const matchesText = text.includes(q);
+    const matchesCategory =
+      selectedCategory === "all" || task.category === selectedCategory;
+    const matchesStatus =
+      selectedStatus === "all" ||
+      (selectedStatus === "completed" && task.completed) ||
+      (selectedStatus === "pending" && !task.completed);
+
+    card.style.display =
+      matchesText && matchesCategory && matchesStatus ? "" : "none";
   }
 }
 
@@ -192,6 +218,7 @@ form.addEventListener("submit", (e) => {
   }
 
   const priority = prioritySelect.value;
+  const category = categorySelect.value;
 
   if (!priority || !["high", "medium", "low"].includes(priority)) {
     alert("Por favor selecciona una prioridad válida.");
@@ -206,6 +233,7 @@ form.addEventListener("submit", (e) => {
         : String(Date.now()),
     text: text,
     priority: priority,
+    category: category,
     completed: false,
   };
 
@@ -231,6 +259,8 @@ for (const task of tasks) {
 }
 
 search.addEventListener("input", applyFilter);
+filterCategory.addEventListener("change", applyFilter);
+filterStatus.addEventListener("change", applyFilter);
 
 // Botón para cambiar entre modo claro y oscuro
 const toggle = document.getElementById("theme-toggle");
