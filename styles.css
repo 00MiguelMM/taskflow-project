@@ -524,6 +524,27 @@
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
+
     }
   }
+}
+
+.clear-completed-btn {
+  background-color: #dc2626;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clear-completed-btn:hover {
+  background-color: #b91c1c;
+}
+
+.clear-completed-container {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
 }
