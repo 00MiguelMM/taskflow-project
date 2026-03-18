@@ -3,6 +3,7 @@
 const STORAGE_KEY = "taskflow_tasks_v1";
 let tasks = [];
 
+
 /**
  * Guarda la lista de tareas en localStorage.
  * Serializa el array de tareas como JSON.
@@ -58,6 +59,7 @@ const list = document.getElementById("task-list");
 const search = document.getElementById("task-search");
 const filterCategory = document.getElementById("filter-category");
 const filterStatus = document.getElementById("filter-status");
+const clearCompletedButton = document.getElementById("clear-completed");
 
 /**
  * Crea y añade al DOM una tarjeta visual para representar una tarea.
@@ -199,6 +201,16 @@ function createTaskCard(task) {
   });
 }
 
+function renderTasks() {
+  list.innerHTML = "";
+
+  for (const task of tasks) {
+    createTaskCard(task);
+  }
+
+  applyFilter();
+}
+
 /**
  * Aplica el filtro de búsqueda a las tareas mostradas en la lista.
  * Oculta aquellas que no coinciden con el texto ingresado en el campo de búsqueda.
@@ -286,14 +298,8 @@ form.addEventListener("submit", (e) => {
     return b.createdAt - a.createdAt;
   });
   
-  saveTasks();
-  list.innerHTML = "";
-  
-  for (const task of tasks) {
-    createTaskCard(task);
-  }
-  
-  applyFilter();
+ saveTasks();
+renderTasks();
 
   input.value = "";
   input.focus();
@@ -309,13 +315,30 @@ tasks.sort((a, b) => {
   return b.createdAt - a.createdAt;
 });
 
-for (const task of tasks) {
-  createTaskCard(task);
-}
+renderTasks();
 
 search.addEventListener("input", applyFilter);
 filterCategory.addEventListener("change", applyFilter);
 filterStatus.addEventListener("change", applyFilter);
+
+clearCompletedButton.addEventListener("click", () => {
+  const completedTasks = tasks.filter((task) => task.completed);
+
+  if (completedTasks.length === 0) {
+    alert("No hay tareas realizadas para borrar.");
+    return;
+  }
+
+  const confirmed = confirm("¿Seguro que quieres borrar todas las tareas realizadas?");
+
+  if (!confirmed) {
+    return;
+  }
+
+  tasks = tasks.filter((task) => !task.completed);
+  saveTasks();
+  renderTasks();
+});
 
 // Botón para cambiar entre modo claro y oscuro
 const toggle = document.getElementById("theme-toggle");
