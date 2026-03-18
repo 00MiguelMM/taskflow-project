@@ -2,6 +2,7 @@
 
 const STORAGE_KEY = "taskflow_tasks_v1";
 let tasks = [];
+let summaryFilter = "all";
 
 
 /**
@@ -60,6 +61,7 @@ const search = document.getElementById("task-search");
 const filterCategory = document.getElementById("filter-category");
 const filterStatus = document.getElementById("filter-status");
 const clearCompletedButton = document.getElementById("clear-completed");
+const summaryButtons = document.querySelectorAll(".summary-btn");
 
 /**
  * Crea y añade al DOM una tarjeta visual para representar una tarea.
@@ -172,6 +174,7 @@ function createTaskCard(task) {
     }
 
     saveTasks();
+    renderTasks();
   });
 
   deleteButton.addEventListener("click", () => {
@@ -207,8 +210,22 @@ function renderTasks() {
   for (const task of tasks) {
     createTaskCard(task);
   }
-
+  updateSummary();
   applyFilter();
+}
+
+function updateSummary() {
+  const totalTasks = document.getElementById("total-tasks");
+  const pendingTasks = document.getElementById("pending-tasks");
+  const completedTasks = document.getElementById("completed-tasks");
+
+  const total = tasks.length;
+  const completed = tasks.filter((task) => task.completed).length;
+  const pending = total - completed;
+
+  totalTasks.textContent = total;
+  pendingTasks.textContent = pending;
+  completedTasks.textContent = completed;
 }
 
 /**
@@ -237,9 +254,14 @@ function applyFilter() {
       selectedStatus === "all" ||
       (selectedStatus === "completed" && task.completed) ||
       (selectedStatus === "pending" && !task.completed);
+    
+    const matchesSummary =
+      summaryFilter === "all" ||
+      (summaryFilter === "completed" && task.completed) ||
+      (summaryFilter === "pending" && !task.completed);
 
     card.style.display =
-      matchesText && matchesCategory && matchesStatus ? "" : "none";
+      matchesText && matchesCategory && matchesStatus && matchesSummary ? "" : "none";
   }
 }
 
@@ -320,6 +342,13 @@ renderTasks();
 search.addEventListener("input", applyFilter);
 filterCategory.addEventListener("change", applyFilter);
 filterStatus.addEventListener("change", applyFilter);
+
+summaryButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    summaryFilter = button.dataset.filter;
+    applyFilter();
+  });
+});
 
 clearCompletedButton.addEventListener("click", () => {
   const completedTasks = tasks.filter((task) => task.completed);
