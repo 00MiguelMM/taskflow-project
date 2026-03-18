@@ -62,6 +62,7 @@ const filterCategory = document.getElementById("filter-category");
 const filterStatus = document.getElementById("filter-status");
 const clearCompletedButton = document.getElementById("clear-completed");
 const summaryButtons = document.querySelectorAll(".summary-btn");
+const sortAge = document.getElementById("sort-age");
 
 /**
  * Crea y añade al DOM una tarjeta visual para representar una tarea.
@@ -207,11 +208,28 @@ function createTaskCard(task) {
 function renderTasks() {
   list.innerHTML = "";
 
-  for (const task of tasks) {
+  const sortedTasks = sortTasksByAge(tasks);
+
+  for (const task of sortedTasks) {
     createTaskCard(task);
   }
+
   updateSummary();
   applyFilter();
+}
+
+function sortTasksByAge(tasksArray) {
+  if (!sortAge) return tasksArray;
+
+  const sorted = [...tasksArray];
+
+  if (sortAge.value === "newest") {
+    sorted.sort((a, b) => b.createdAt - a.createdAt);
+  } else if (sortAge.value === "oldest") {
+    sorted.sort((a, b) => a.createdAt - b.createdAt);
+  }
+
+  return sorted;
 }
 
 function updateSummary() {
@@ -342,6 +360,7 @@ renderTasks();
 search.addEventListener("input", applyFilter);
 filterCategory.addEventListener("change", applyFilter);
 filterStatus.addEventListener("change", applyFilter);
+sortAge.addEventListener("change", renderTasks);
 
 summaryButtons.forEach((button) => {
   button.addEventListener("click", () => {
