@@ -130,17 +130,7 @@ function createTaskCard(task) {
   checkbox.className = "mr-2";
 
   const title = document.createElement("h3");
-  title.textContent = task.text;
-  title.className = "cursor-pointer";
-  title.title = "Haz doble clic para editar";
-  title.addEventListener("dblclick", () => {
-  const newText = prompt("Editar tarea", task.text);
-  if (newText !== null && newText.trim() !== "") {
-    task.text = newText.trim();
-    title.textContent = task.text;
-    saveTasks();
-  }
-});
+title.textContent = task.text;
 
   if (task.completed) {
     title.style.textDecoration = "line-through";
@@ -163,6 +153,21 @@ function createTaskCard(task) {
   deleteButton.type = "button";
   deleteButton.textContent = "Eliminar";
 
+  const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.textContent = "✏️";
+    editButton.className = "text-slate-600 hover:text-blue-600 text-lg";
+
+    editButton.addEventListener("click", () => {
+  const newText = prompt("Editar tarea", task.text);
+
+  if (newText !== null && newText.trim() !== "") {
+    task.text = newText.trim();
+    saveTasks();
+    renderTasks();
+  }
+});
+
   checkbox.addEventListener("change", () => {
     task.completed = checkbox.checked;
 
@@ -184,6 +189,16 @@ function createTaskCard(task) {
   
     card.classList.add("opacity-0", "translate-y-2");
   
+  editButton.addEventListener("click", () => {
+  const newText = prompt("Editar tarea", task.text);
+
+  if (newText !== null && newText.trim() !== "") {
+    task.text = newText.trim();
+    saveTasks();
+    renderTasks();
+  }
+});
+
     setTimeout(() => {
       card.remove();
     }, 300);
@@ -194,6 +209,7 @@ function createTaskCard(task) {
 
   metaBar.appendChild(priorityTag);
   metaBar.appendChild(categoryTag);
+  metaBar.appendChild(editButton);
   metaBar.appendChild(deleteButton);
 
   card.appendChild(leftSide);
