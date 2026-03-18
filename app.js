@@ -381,6 +381,17 @@ sortAge.addEventListener("change", renderTasks);
 summaryButtons.forEach((button) => {
   button.addEventListener("click", () => {
     summaryFilter = button.dataset.filter;
+
+    // quitar estilo activo a todos
+    summaryButtons.forEach((btn) => {
+      btn.classList.remove("bg-blue-600", "text-white");
+      btn.classList.add("bg-slate-100");
+    });
+
+    // añadir estilo activo al pulsado
+    button.classList.remove("bg-slate-100");
+    button.classList.add("bg-blue-600", "text-white");
+
     applyFilter();
   });
 });
