@@ -418,8 +418,20 @@ clearCompletedButton.addEventListener("click", () => {
 // Botón para cambiar entre modo claro y oscuro
 const toggle = document.getElementById("theme-toggle");
 
+function updateThemeIcon() {
+  if (document.documentElement.classList.contains("dark")) {
+    toggle.textContent = "☀️";
+  } else {
+    toggle.textContent = "🌙";
+  }
+}
+
 if (toggle) {
   toggle.addEventListener("click", () => {
     document.documentElement.classList.toggle("dark");
+    updateThemeIcon();
   });
+
+  // establecer icono correcto al cargar
+  updateThemeIcon();
 }
