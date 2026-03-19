@@ -731,3 +731,22 @@ button {
 #task-list article h3 {
   font-weight: 500;
 }
+
+.dark #task-priority,
+.dark #task-category,
+.dark #filter-category,
+.dark #filter-status,
+.dark #sort-age {
+  background-color: #334155;
+  color: #f1f5f9;
+  border-color: #475569;
+}
+
+.dark #task-priority option,
+.dark #task-category option,
+.dark #filter-category option,
+.dark #filter-status option,
+.dark #sort-age option {
+  background-color: #334155;
+  color: #f8fafc;
+}
