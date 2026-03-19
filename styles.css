@@ -548,3 +548,160 @@
   display: flex;
   justify-content: flex-end;
 }
+
+html, body {
+  overflow-x: hidden;
+}
+
+main {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+#task-form input,
+#task-form select,
+#task-form button {
+  min-width: 0;
+}
+
+#task-list article h3 {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (min-width: 1600px) {
+  .max-w-5xl {
+    max-width: 90rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  main.grid.grid-cols-4 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  aside.col-span-1,
+  section.col-span-3 {
+    grid-column: span 1 / span 1;
+  }
+
+  #task-form {
+    flex-wrap: wrap;
+  }
+
+  #task-form #task-input {
+    flex: 1 1 100%;
+  }
+
+  #task-form #task-date {
+    flex: 1 1 48%;
+  }
+
+  #task-form #task-priority,
+  #task-form #task-category {
+    flex: 1 1 24%;
+  }
+
+  #task-form button[type="submit"] {
+    flex: 1 1 100%;
+  }
+
+  .clear-completed-container {
+    justify-content: stretch;
+  }
+
+  .clear-completed-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  header .max-w-5xl {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  main {
+    margin-top: 16px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  h1.text-2xl {
+    font-size: 1.25rem;
+  }
+
+  aside.col-span-1,
+  section.col-span-3 {
+    padding: 16px;
+  }
+
+  #task-form {
+    flex-direction: column;
+  }
+
+  #task-form #task-input,
+  #task-form #task-date,
+  #task-form #task-priority,
+  #task-form #task-category,
+  #task-form button[type="submit"] {
+    width: 100%;
+    flex: none;
+  }
+
+  .clear-completed-btn {
+    width: 100%;
+  }
+
+  #task-list article {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  #task-list article > div:first-child,
+  #task-list article > div:last-child {
+    width: 100%;
+  }
+
+  #task-list article > div:first-child {
+    align-items: flex-start;
+  }
+
+  #task-list article > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+
+  .summary-btn {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  header .max-w-5xl {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  main {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  aside.col-span-1,
+  section.col-span-3 {
+    padding: 12px;
+  }
+
+  h1.text-2xl {
+    font-size: 1.1rem;
+  }
+
+  #theme-toggle {
+    padding: 8px 12px;
+  }
+}
