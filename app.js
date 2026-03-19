@@ -130,7 +130,7 @@ function createTaskCard(task) {
   checkbox.className = "mr-2";
 
   const title = document.createElement("h3");
-title.textContent = task.text;
+  title.textContent = task.text;
 
   if (task.completed) {
     title.style.textDecoration = "line-through";
@@ -184,25 +184,15 @@ title.textContent = task.text;
   });
 
   deleteButton.addEventListener("click", () => {
-    tasks = tasks.filter((t) => t.id !== task.id);
-    saveTasks();
-  
-    card.classList.add("opacity-0", "translate-y-2");
-  
-  editButton.addEventListener("click", () => {
-  const newText = prompt("Editar tarea", task.text);
+  tasks = tasks.filter((t) => t.id !== task.id);
+  saveTasks();
 
-  if (newText !== null && newText.trim() !== "") {
-    task.text = newText.trim();
-    saveTasks();
-    renderTasks();
-  }
+  card.classList.add("opacity-0", "translate-y-2");
+
+  setTimeout(() => {
+    card.remove();
+  }, 300);
 });
-
-    setTimeout(() => {
-      card.remove();
-    }, 300);
-  });
 
   leftSide.appendChild(checkbox);
   leftSide.appendChild(title);
@@ -355,7 +345,7 @@ form.addEventListener("submit", (e) => {
   });
   
  saveTasks();
-renderTasks();
+ renderTasks();
 
   input.value = "";
   input.focus();
