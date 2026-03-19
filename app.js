@@ -93,33 +93,35 @@ function createTaskCard(task) {
   const card = document.createElement("article");
   card.className = "flex items-center justify-between p-3 rounded mb-2 transition-all duration-1000 opacity-0 translate-y-10 border";
   card.dataset.id = task.id;
-  if (task.date) {
-    const today = new Date();
-    const dueDate = new Date(`${task.date}T00:00:00`);
-  
-    today.setHours(0, 0, 0, 0);
-    dueDate.setHours(0, 0, 0, 0);
-  
-    const diffTime = dueDate - today;
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-  
-    card.style.borderWidth = "2px";
-  
-    if (diffDays < 0) {
-      card.style.backgroundColor = "#fee2e2";
-      card.style.borderColor = "#ef4444";
-    } else if (diffDays <= 2) {
-      card.style.backgroundColor = "#fef3c7";
-      card.style.borderColor = "#f59e0b";
-    } else {
-      card.style.backgroundColor = "#f1f5f9";
-      card.style.borderColor = "#cbd5e1";
-    }
+const isDarkMode = document.documentElement.classList.contains("dark");
+
+if (task.date) {
+  const today = new Date();
+  const dueDate = new Date(`${task.date}T00:00:00`);
+
+  today.setHours(0, 0, 0, 0);
+  dueDate.setHours(0, 0, 0, 0);
+
+  const diffTime = dueDate - today;
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+  card.style.borderWidth = "2px";
+
+  if (diffDays < 0) {
+    card.style.backgroundColor = isDarkMode ? "#3f1d1d" : "#fee2e2";
+    card.style.borderColor = "#ef4444";
+  } else if (diffDays <= 2) {
+    card.style.backgroundColor = isDarkMode ? "#3a2a12" : "#fef3c7";
+    card.style.borderColor = "#f59e0b";
   } else {
-    card.style.backgroundColor = "#f1f5f9";
-    card.style.borderColor = "#cbd5e1";
-    card.style.borderWidth = "1px";
+    card.style.backgroundColor = isDarkMode ? "#1e293b" : "#f1f5f9";
+    card.style.borderColor = isDarkMode ? "#475569" : "#cbd5e1";
   }
+} else {
+  card.style.backgroundColor = isDarkMode ? "#1e293b" : "#f1f5f9";
+  card.style.borderColor = isDarkMode ? "#475569" : "#cbd5e1";
+  card.style.borderWidth = "1px";
+}
 
   const leftSide = document.createElement("div");
   leftSide.className = "flex items-center gap-2";
@@ -420,6 +422,7 @@ if (toggle) {
   toggle.addEventListener("click", () => {
     document.documentElement.classList.toggle("dark");
     updateThemeIcon();
+    renderTasks();
   });
 
   // establecer icono correcto al cargar
