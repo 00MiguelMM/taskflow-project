@@ -1,53 +1,64 @@
 // app.js
 
-const STORAGE_KEY = "taskflow_tasks_v1";
+import { getTasks, createTask, deleteTask } from "./API/client.js";
+
 let tasks = [];
 let summaryFilter = "all";
 
-
 /**
- * Guarda la lista de tareas en localStorage.
- * Serializa el array de tareas como JSON.
- */
-function saveTasks() {
-  const serializedTasks = JSON.stringify(tasks);
-
-  try {
-    localStorage.setItem(STORAGE_KEY, serializedTasks);
-  } catch (error) {
-    console.error("Error saving tasks to localStorage:", error);
-  }
-}
-
-/**
- * Carga las tareas persistidas desde localStorage (clave STORAGE_KEY) y
+ * Carga las tareas persistidas desde la API y
  * sincroniza la variable global tasks.
  *
  * @returns {void} No devuelve ningún valor; actualiza tasks en memoria.
  *
  * @throws {never} No propaga errores. Si no hay datos, el JSON es inválido o el
- * valor almacenado no es un array, registra el error en consola y deja tasks
+ * valor recibido no es un array, registra el error en consola y deja tasks
  * como un array vacío.
  */
-function loadTasks() {
-  const stored = localStorage.getItem(STORAGE_KEY);
-
-  if (!stored) {
-    tasks = [];
-    return;
-  }
-
+async function loadTasks() {
   try {
-    const parsed = JSON.parse(stored);
-    tasks = Array.isArray(parsed)
-      ? parsed.map((task) => ({
-          ...task,
-          completed: task.completed ?? false,
-        }))
+    setNetworkStatus("Cargando tareas...", "loading");
+
+    const response = await getTasks();
+
+    setNetworkStatus("Tareas cargadas correctamente.", "success");
+
+    const data = Array.isArray(response)
+      ? response
+      : Array.isArray(response?.data)
+      ? response.data
+      : Array.isArray(response?.tasks)
+      ? response.tasks
       : [];
-  } catch (err) {
-    console.error("Error parsing stored tasks:", err);
+
+    const priorityMap = {
+      1: "high",
+      2: "medium",
+      3: "low",
+      high: "high",
+      medium: "medium",
+      low: "low",
+    };
+
+    tasks = data.map((task) => ({
+      id: task.id,
+      text: task.titulo ?? task.text ?? "",
+      priority: priorityMap[task.prioridad] || "low",
+      category: task.categoria ?? task.category ?? "Sin categoría",
+      date: task.fecha ?? task.date ?? "",
+      completed: task.completada ?? task.completed ?? false,
+      createdAt: task.createdAt ?? task.creadaEn ?? Date.now(),
+    }));
+
+    renderTasks();
+
+  } catch (error) {
+    console.error("Error al cargar tareas desde la API:", error);
+
+    setNetworkStatus("Error al cargar tareas.", "error");
+
     tasks = [];
+    renderTasks();
   }
 }
 
@@ -63,13 +74,29 @@ const filterStatus = document.getElementById("filter-status");
 const clearCompletedButton = document.getElementById("clear-completed");
 const summaryButtons = document.querySelectorAll(".summary-btn");
 const sortAge = document.getElementById("sort-age");
+const networkStatus = document.getElementById("network-status");
 
+function setNetworkStatus(message, type = "") {
+  if (!networkStatus) return;
+
+  networkStatus.textContent = message;
+
+  if (type === "loading") {
+    networkStatus.style.color = "blue";
+  } else if (type === "success") {
+    networkStatus.style.color = "green";
+  } else if (type === "error") {
+    networkStatus.style.color = "red";
+  } else {
+    networkStatus.style.color = "black";
+  }
+}
 /**
  * Crea y añade al DOM una tarjeta visual para representar una tarea.
  * La apariencia del tag de prioridad se determina dinámicamente según la prioridad de la tarea.
  *
  * @param {Object} task - Objeto que representa la tarea.
- * @param {string} task.id - Identificador único de la tarea.
+ * @param {string|number} task.id - Identificador único de la tarea.
  * @param {string} task.text - Descripción de la tarea.
  * @param {string} task.priority - Prioridad de la tarea: "high", "medium" o "low".
  * @param {boolean} task.completed - Indica si la tarea está completada.
@@ -91,37 +118,39 @@ function createTaskCard(task) {
   };
 
   const card = document.createElement("article");
-  card.className = "flex items-center justify-between p-3 rounded mb-2 transition-all duration-1000 opacity-0 translate-y-10 border";
-  card.dataset.id = task.id;
-const isDarkMode = document.documentElement.classList.contains("dark");
+  card.className =
+    "flex items-center justify-between p-3 rounded mb-2 transition-all duration-300 opacity-0 translate-y-2 border";
+  card.dataset.id = String(task.id);
 
-if (task.date) {
-  const today = new Date();
-  const dueDate = new Date(`${task.date}T00:00:00`);
+  const isDarkMode = document.documentElement.classList.contains("dark");
 
-  today.setHours(0, 0, 0, 0);
-  dueDate.setHours(0, 0, 0, 0);
+  if (task.date) {
+    const today = new Date();
+    const dueDate = new Date(`${task.date}T00:00:00`);
 
-  const diffTime = dueDate - today;
-  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+    today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
 
-  card.style.borderWidth = "2px";
+    const diffTime = dueDate - today;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
-  if (diffDays < 0) {
-    card.style.backgroundColor = isDarkMode ? "#3f1d1d" : "#fee2e2";
-    card.style.borderColor = "#ef4444";
-  } else if (diffDays <= 2) {
-    card.style.backgroundColor = isDarkMode ? "#3a2a12" : "#fef3c7";
-    card.style.borderColor = "#f59e0b";
+    card.style.borderWidth = "2px";
+
+    if (diffDays < 0) {
+      card.style.backgroundColor = isDarkMode ? "#3f1d1d" : "#fee2e2";
+      card.style.borderColor = "#ef4444";
+    } else if (diffDays <= 2) {
+      card.style.backgroundColor = isDarkMode ? "#3a2a12" : "#fef3c7";
+      card.style.borderColor = "#f59e0b";
+    } else {
+      card.style.backgroundColor = isDarkMode ? "#1e293b" : "#f1f5f9";
+      card.style.borderColor = isDarkMode ? "#475569" : "#cbd5e1";
+    }
   } else {
     card.style.backgroundColor = isDarkMode ? "#1e293b" : "#f1f5f9";
     card.style.borderColor = isDarkMode ? "#475569" : "#cbd5e1";
+    card.style.borderWidth = "1px";
   }
-} else {
-  card.style.backgroundColor = isDarkMode ? "#1e293b" : "#f1f5f9";
-  card.style.borderColor = isDarkMode ? "#475569" : "#cbd5e1";
-  card.style.borderWidth = "1px";
-}
 
   const leftSide = document.createElement("div");
   leftSide.className = "flex items-center gap-2";
@@ -143,11 +172,14 @@ if (task.date) {
   metaBar.className = "flex items-center gap-3";
 
   const priority = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.low;
+
   const priorityTag = document.createElement("span");
   priorityTag.className = priority.class;
   priorityTag.textContent = priority.label;
+
   const categoryTag = document.createElement("span");
-  categoryTag.className = "bg-blue-200 text-slate-800 px-2 py-1 rounded text-xs";
+  categoryTag.className =
+    "bg-blue-200 text-slate-800 px-2 py-1 rounded text-xs";
   categoryTag.textContent = task.category || "Sin categoría";
 
   const deleteButton = document.createElement("button");
@@ -156,45 +188,28 @@ if (task.date) {
   deleteButton.textContent = "Eliminar";
 
   const editButton = document.createElement("button");
-    editButton.type = "button";
-    editButton.textContent = "✏️";
-    editButton.className = "text-slate-600 hover:text-blue-600 text-lg";
+  editButton.type = "button";
+  editButton.textContent = "✏️";
+  editButton.className = "text-slate-600 hover:text-blue-600 text-lg";
 
-    editButton.addEventListener("click", () => {
-  const newText = prompt("Editar tarea", task.text);
-
-  if (newText !== null && newText.trim() !== "") {
-    task.text = newText.trim();
-    saveTasks();
-    renderTasks();
-  }
-});
-
-  checkbox.addEventListener("change", () => {
-    task.completed = checkbox.checked;
-
-    if (task.completed) {
-      title.style.textDecoration = "line-through";
-      title.style.opacity = "0.6";
-    } else {
-      title.style.textDecoration = "none";
-      title.style.opacity = "1";
-    }
-
-    saveTasks();
-    renderTasks();
+  editButton.addEventListener("click", () => {
+    alert("La edición aún no está conectada al backend.");
   });
 
-  deleteButton.addEventListener("click", () => {
-  tasks = tasks.filter((t) => t.id !== task.id);
-  saveTasks();
+  checkbox.addEventListener("change", () => {
+    alert("Marcar tareas como completadas aún no está conectado al backend.");
+    checkbox.checked = task.completed;
+  });
 
-  card.classList.add("opacity-0", "translate-y-2");
-
-  setTimeout(() => {
-    card.remove();
-  }, 300);
-});
+  deleteButton.addEventListener("click", async () => {
+    try {
+      await deleteTask(task.id);
+      await loadTasks();
+    } catch (error) {
+      console.error("Error al eliminar tarea:", error);
+      alert("No se pudo eliminar la tarea.");
+    }
+  });
 
   leftSide.appendChild(checkbox);
   leftSide.appendChild(title);
@@ -208,6 +223,7 @@ if (task.date) {
   card.appendChild(metaBar);
 
   list.appendChild(card);
+
   requestAnimationFrame(() => {
     card.classList.remove("opacity-0", "translate-y-2");
   });
@@ -266,7 +282,7 @@ function applyFilter() {
   for (const card of list.children) {
     const text = card.querySelector("h3")?.textContent.toLowerCase() || "";
     const taskId = card.dataset.id;
-    const task = tasks.find((t) => t.id === taskId);
+    const task = tasks.find((t) => String(t.id) === String(taskId));
 
     if (!task) {
       card.style.display = "none";
@@ -280,14 +296,16 @@ function applyFilter() {
       selectedStatus === "all" ||
       (selectedStatus === "completed" && task.completed) ||
       (selectedStatus === "pending" && !task.completed);
-    
+
     const matchesSummary =
       summaryFilter === "all" ||
       (summaryFilter === "completed" && task.completed) ||
       (summaryFilter === "pending" && !task.completed);
 
     card.style.display =
-      matchesText && matchesCategory && matchesStatus && matchesSummary ? "" : "none";
+      matchesText && matchesCategory && matchesStatus && matchesSummary
+        ? ""
+        : "none";
   }
 }
 
@@ -295,7 +313,7 @@ function applyFilter() {
  * Manejador del evento submit del formulario de tareas.
  * Valida la entrada, previene duplicados y agrega la tarea si es válida.
  */
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const text = input.value.trim();
@@ -315,55 +333,45 @@ form.addEventListener("submit", (e) => {
     return;
   }
 
-  const task = {
-    id:
-      typeof crypto !== "undefined" && crypto.randomUUID
-        ? crypto.randomUUID()
-        : String(Date.now()),
-    text: text,
-    priority: priority,
-    category: category,
-    date: date,
-    completed: false,
-    createdAt: Date.now(),
-  };
-
-  if (tasks.some((t) => t.text === task.text && t.priority === task.priority)) {
+  if (tasks.some((t) => t.text === text && t.priority === priority)) {
     alert("La tarea ya existe con la misma prioridad.");
     input.focus();
     return;
   }
 
-  tasks.push(task);
+  const priorityMap = {
+    high: 1,
+    medium: 2,
+    low: 3,
+  };
 
-  tasks.sort((a, b) => {
-    const order = { high: 1, medium: 2, low: 3 };
-  
-    if (order[a.priority] !== order[b.priority]) {
-      return order[a.priority] - order[b.priority];
-    }
-  
-    return b.createdAt - a.createdAt;
-  });
-  
- saveTasks();
- renderTasks();
+  try {
+    setNetworkStatus("Guardando tarea...", "loading");
 
-  input.value = "";
-  input.focus();
+    await createTask({
+      titulo: text,
+      prioridad: priorityMap[priority],
+      categoria: category,
+      fecha: date,
+    });
+
+    await loadTasks();
+
+    setNetworkStatus("Tarea creada correctamente.", "success");
+
+    input.value = "";
+    dateInput.value = "";
+    prioritySelect.value = "medium";
+    categorySelect.value = "Trabajo";
+    input.focus();
+
+  } catch (error) {
+    setNetworkStatus("No se pudo crear la tarea.", "error");
+    alert("No se pudo crear la tarea: " + error.message);
+  }
 });
 
 loadTasks();
-
-tasks.sort((a, b) => {
-  const order = { high: 1, medium: 2, low: 3 };
-  if (order[a.priority] !== order[b.priority]) {
-    return order[a.priority] - order[b.priority];
-  }
-  return b.createdAt - a.createdAt;
-});
-
-renderTasks();
 
 search.addEventListener("input", applyFilter);
 filterCategory.addEventListener("change", applyFilter);
@@ -389,28 +397,15 @@ summaryButtons.forEach((button) => {
 });
 
 clearCompletedButton.addEventListener("click", () => {
-  const completedTasks = tasks.filter((task) => task.completed);
-
-  if (completedTasks.length === 0) {
-    alert("No hay tareas realizadas para borrar.");
-    return;
-  }
-
-  const confirmed = confirm("¿Seguro que quieres borrar todas las tareas realizadas?");
-
-  if (!confirmed) {
-    return;
-  }
-
-  tasks = tasks.filter((task) => !task.completed);
-  saveTasks();
-  renderTasks();
+  alert("Borrar tareas realizadas aún no está conectado al backend.");
 });
 
 // Botón para cambiar entre modo claro y oscuro
 const toggle = document.getElementById("theme-toggle");
 
 function updateThemeIcon() {
+  if (!toggle) return;
+
   if (document.documentElement.classList.contains("dark")) {
     toggle.textContent = "☀️";
   } else {
@@ -428,3 +423,5 @@ if (toggle) {
   // establecer icono correcto al cargar
   updateThemeIcon();
 }
+
+setNetworkStatus("PRUEBA MENSAJE", "success");

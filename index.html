@@ -14,8 +14,11 @@
 
     <h1 class="text-2xl font-bold">TaskFlow</h1>
 
-    <button id="theme-toggle"
-      class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition">
+    <button
+      id="theme-toggle"
+      type="button"
+      class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+    >
       🌙
     </button>
 
@@ -37,65 +40,67 @@
       <span>Importancia media</span>
     </div>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 mb-4">
       <span class="w-3 h-3 rounded-full bg-green-500"></span>
       <span>Importancia baja</span>
     </div>
-     <hr class="border-slate-200 dark:border-slate-700 mb-4">
 
-  <h2 class="text-lg font-semibold mb-4">Resumen de tareas</h2>
+    <hr class="border-slate-200 dark:border-slate-700 mb-4" />
 
-  <div class="space-y-3">
-    <button
-      class="summary-btn w-full flex justify-between items-center bg-slate-100 dark:bg-slate-700 px-4 py-3 rounded hover:bg-slate-200 dark:hover:bg-slate-600 transition"
-      data-filter="all"
-    >
-      <span>Tareas totales</span>
-      <strong id="total-tasks">0</strong>
-    </button>
+    <h2 class="text-lg font-semibold mb-4">Resumen de tareas</h2>
 
-    <button
-      class="summary-btn w-full flex justify-between items-center bg-slate-100 dark:bg-slate-700 px-4 py-3 rounded hover:bg-slate-200 dark:hover:bg-slate-600 transition"
-      data-filter="pending"
-    >
-      <span>Tareas pendientes</span>
-      <strong id="pending-tasks">0</strong>
-    </button>
+    <div class="space-y-3">
+      <button
+        type="button"
+        class="summary-btn w-full flex justify-between items-center bg-slate-100 dark:bg-slate-700 px-4 py-3 rounded hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+        data-filter="all"
+      >
+        <span>Tareas totales</span>
+        <strong id="total-tasks">0</strong>
+      </button>
 
-    <button
-      class="summary-btn w-full flex justify-between items-center bg-slate-100 dark:bg-slate-700 px-4 py-3 rounded hover:bg-slate-200 dark:hover:bg-slate-600 transition"
-      data-filter="completed"
-    >
-      <span>Tareas realizadas</span>
-      <strong id="completed-tasks">0</strong>
-    </button>
-  </div>
-</aside>
+      <button
+        type="button"
+        class="summary-btn w-full flex justify-between items-center bg-slate-100 dark:bg-slate-700 px-4 py-3 rounded hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+        data-filter="pending"
+      >
+        <span>Tareas pendientes</span>
+        <strong id="pending-tasks">0</strong>
+      </button>
+
+      <button
+        type="button"
+        class="summary-btn w-full flex justify-between items-center bg-slate-100 dark:bg-slate-700 px-4 py-3 rounded hover:bg-slate-200 dark:hover:bg-slate-600 transition"
+        data-filter="completed"
+      >
+        <span>Tareas realizadas</span>
+        <strong id="completed-tasks">0</strong>
+      </button>
+    </div>
+  </aside>
 
   <section class="col-span-3 bg-white dark:bg-slate-800 p-6 rounded shadow">
 
     <h2 class="text-xl font-semibold mb-4">Lista de tareas</h2>
 
     <form id="task-form" class="flex gap-2 mb-4">
+      <input
+        id="task-input"
+        type="text"
+        placeholder="Nueva tarea..."
+        required
+        class="flex-1 border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+      />
 
-    <input
-      id="task-input"
-      type="text"
-      placeholder="Nueva tarea..."
-      required
-      class="flex-1 border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-/>
-    <input
-      id="task-date"
-      type="date"
-      class="border border-slate-300 rounded px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-/>
-
+      <input
+        id="task-date"
+        type="date"
+        class="border border-slate-300 rounded px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+      />
 
       <select
         id="task-priority"
         class="border border-slate-300 rounded px-2 py-2 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100"
->
       >
         <option value="high">Alta</option>
         <option value="medium" selected>Media</option>
@@ -105,8 +110,7 @@
       <select
         id="task-category"
         class="border border-slate-300 rounded px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100"
->
->
+      >
         <option value="Trabajo">Trabajo</option>
         <option value="Personal">Personal</option>
         <option value="Urgente">Urgente</option>
@@ -118,7 +122,6 @@
       >
         Añadir
       </button>
-
     </form>
 
     <input
@@ -126,42 +129,41 @@
       type="text"
       placeholder="Buscar tarea..."
       class="w-full border border-slate-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-/>
+    />
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+      <select id="filter-category" class="border border-slate-300 rounded px-2 py-2 dark:bg-slate-700 dark:border-slate-600">
+        <option value="all">Todas las etiquetas</option>
+        <option value="Trabajo">Trabajo</option>
+        <option value="Personal">Personal</option>
+        <option value="Urgente">Urgente</option>
+      </select>
 
-  <select id="filter-category" class="border border-slate-300 rounded px-2 py-2 dark:bg-slate-700 dark:border-slate-600">
-    <option value="all">Todas las etiquetas</option>
-    <option value="Trabajo">Trabajo</option>
-    <option value="Personal">Personal</option>
-    <option value="Urgente">Urgente</option>
-  </select>
+      <select id="filter-status" class="border border-slate-300 rounded px-2 py-2 dark:bg-slate-700 dark:border-slate-600">
+        <option value="all">Todos los estados</option>
+        <option value="pending">Pendientes</option>
+        <option value="completed">Completadas</option>
+      </select>
 
-  <select id="filter-status" class="border border-slate-300 rounded px-2 py-2 dark:bg-slate-700 dark:border-slate-600">
-    <option value="all">Todos los estados</option>
-    <option value="pending">Pendientes</option>
-    <option value="completed">Completadas</option>
-  </select>
+      <select id="sort-age" class="border border-slate-300 rounded px-2 py-2 dark:bg-slate-700 dark:border-slate-600">
+        <option value="newest">Más recientes</option>
+        <option value="oldest">Más antiguas</option>
+      </select>
+    </div>
 
-  <select id="sort-age" class="border border-slate-300 rounded px-2 py-2 dark:bg-slate-700 dark:border-slate-600">
-    <option value="newest">Más recientes</option>
-    <option value="oldest">Más antiguas</option>
-  </select>
-
-</div>
-
+    <p id="network-status" class="mb-4 text-sm font-medium"></p>
     <div id="task-list" class="space-y-2"></div>
 
-<div class="clear-completed-container">
-  <button id="clear-completed" type="button" class="clear-completed-btn">
-    Borrar tareas realizadas
-  </button>
-</div>
+    <div class="clear-completed-container">
+      <button id="clear-completed" type="button" class="clear-completed-btn">
+        Borrar tareas realizadas
+      </button>
+    </div>
 
   </section>
 
 </main>
 
-<script src="app.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
