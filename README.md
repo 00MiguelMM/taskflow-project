@@ -22,8 +22,11 @@ Permite crear, visualizar y eliminar tareas mediante un frontend en JavaScript y
 ```
 taskflow-project/
 │
-├── API/
+├── frontend-api/
 │   └── client.js
+│
+├── api/
+│   └── tasks.js
 │
 ├── docs/
 │   └── ai/
@@ -58,25 +61,65 @@ Utiliza `fetch` para comunicarse con la API.
 
 ---
 
+### Capa de red (cliente)
+
+Se ha creado un archivo dedicado (`frontend-api/client.js`) que centraliza todas las peticiones HTTP al backend.
+
+Permite:
+
+- separar la lógica de red
+- reutilizar código
+- facilitar mantenimiento
+
+Ejemplo:
+
+```js
+const API_URL = "/api/tasks";
+
+export async function getTasks() {
+  const response = await fetch(API_URL);
+  return response.json();
+}
+```
+
+---
+
 ### Backend
 
 El backend está construido con Express y sigue una arquitectura por capas.
 
 Se encarga de:
 
-- gestionar las rutas (endpoints)
-- procesar las peticiones HTTP
-- devolver respuestas en formato JSON
+- gestionar rutas (endpoints)
+- procesar peticiones HTTP
+- devolver respuestas en JSON
+
+---
+
+### Arquitectura por capas
+
+- Routes → endpoints
+- Controllers → lógica de cada petición
+- Services → lógica de negocio
 
 ---
 
 ## Middlewares utilizados
 
+Los middlewares son funciones que se ejecutan antes de llegar al controlador.
+
+Sirven para:
+
+- procesar datos
+- permitir comunicación entre dominios
+- preparar peticiones
+
+---
+
 ### express.json()
 
-Permite leer el body de las peticiones en formato JSON.
+Permite leer el body en JSON.
 
-Ejemplo:
 ```js
 app.use(express.json());
 ```
@@ -85,9 +128,8 @@ app.use(express.json());
 
 ### cors
 
-Permite la comunicación entre frontend y backend aunque estén en distintos puertos.
+Permite comunicación frontend-backend.
 
-Ejemplo:
 ```js
 app.use(cors());
 ```
@@ -96,9 +138,14 @@ app.use(cors());
 
 ## API REST
 
-Base URL:
-```
+### Base URL
+
+- Desarrollo:
 http://localhost:3000/api/v1/tasks
+
+- Producción:
+```
+/api/tasks
 ```
 
 ---
@@ -108,8 +155,24 @@ http://localhost:3000/api/v1/tasks
 Obtiene todas las tareas.
 
 Respuesta:
+
 ```json
-[]
+[
+  {
+    "id": 1,
+    "titulo": "Primera tarea",
+    "prioridad": 2,
+    "categoria": "Trabajo",
+    "fecha": "2026-04-17"
+  },
+  {
+    "id": 2,
+    "titulo": "Segunda tarea",
+    "prioridad": 3,
+    "categoria": "Personal",
+    "fecha": "2026-04-18"
+  }
+]
 ```
 
 ---
@@ -119,6 +182,7 @@ Respuesta:
 Crea una nueva tarea.
 
 Body:
+
 ```json
 {
   "titulo": "Nueva tarea",
@@ -128,45 +192,119 @@ Body:
 }
 ```
 
+Respuesta:
+
+```json
+{
+  "message": "Tarea creada correctamente",
+  "task": {
+    "id": 3,
+    "titulo": "Nueva tarea",
+    "prioridad": 2,
+    "categoria": "Trabajo",
+    "fecha": "2026-04-17"
+  }
+}
+```
+
 ---
 
 ### DELETE /tasks/:id
 
 Elimina una tarea por su id.
 
+Respuesta:
+
+```json
+{
+  "message": "Tarea eliminada correctamente"
+}
+```
+
+---
+
+## Ejemplos de uso con fetch
+
+### Obtener tareas
+
+```js
+fetch("/api/tasks")
+  .then(res => res.json())
+  .then(data => console.log(data));
+```
+
+---
+
+### Crear tarea
+
+```js
+fetch("/api/tasks", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    titulo: "Nueva tarea",
+    prioridad: 2
+  })
+});
+```
+
+---
+
+### Eliminar tarea
+
+```js
+fetch("/api/tasks/1", {
+  method: "DELETE"
+});
+```
+
+---
+
+## Flujo de funcionamiento
+
+1. Usuario interactúa con la interfaz
+2. Frontend hace petición HTTP
+3. Backend procesa la petición
+4. Backend devuelve JSON
+5. Frontend renderiza los datos
+
 ---
 
 ## Estados de red en la interfaz
-
-Se han implementado tres estados visuales:
 
 - Cargando → "Cargando tareas..."
 - Éxito → "Tarea creada correctamente"
 - Error → "No se pudo crear la tarea"
 
-Esto mejora la experiencia del usuario al interactuar con la API.
+---
+
+## Despliegue
+
+La aplicación está desplegada en Vercel.
+
+- Frontend → sitio estático
+- Backend → Serverless Functions
 
 ---
 
 ## Pruebas realizadas
 
-Durante esta fase se ha comprobado:
-
-- carga de tareas desde la API
-- creación de tareas desde el frontend
+- carga de tareas desde API
+- creación de tareas
 - eliminación de tareas
-- persistencia tras recargar la página
-- comunicación correcta entre frontend y backend
-- visualización de estados de carga, éxito y error
-- manejo de error cuando el backend no está disponible
+- persistencia tras recargar
+- comunicación frontend-backend
+- estados de red funcionando
+- control de errores
 
 ---
 
 ## Mejoras futuras
 
-- conectar la edición de tareas al backend
-- permitir marcar tareas como completadas en la API
-- implementar borrado de tareas completadas
-- añadir validaciones más avanzadas
-- mejorar la presentación visual de los estados de red
-- documentar la API con Swagger
+- actualizar tareas (PUT)
+- base de datos (MongoDB/PostgreSQL)
+- autenticación de usuarios
+- documentación con Swagger
+- monitorización con Sentry
