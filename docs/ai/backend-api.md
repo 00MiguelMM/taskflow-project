@@ -61,3 +61,14 @@ Permite:
 - generar documentación automática
 
 Es muy útil para que otros desarrolladores entiendan cómo usar la API.
+
+---
+
+## Uso en este proyecto
+
+En este proyecto:
+
+- Se utiliza fetch en lugar de Axios para las peticiones HTTP
+- Se ha probado la API manualmente (similar a como se haría con Postman)
+- No se ha implementado Sentry, pero sería útil para monitorizar errores en producción
+- No se ha utilizado Swagger, aunque sería recomendable para documentar la API en futuras versiones
