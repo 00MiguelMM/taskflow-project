@@ -1,6 +1,6 @@
 // app.js
 
-import { getTasks, createTask, deleteTask } from "./API/client.js";
+import { getTasks, createTask, deleteTask } from "./frontend-api/client.js";
 
 let tasks = [];
 let summaryFilter = "all";
@@ -423,5 +423,3 @@ if (toggle) {
   // establecer icono correcto al cargar
   updateThemeIcon();
 }
-
-setNetworkStatus("PRUEBA MENSAJE", "success");
