@@ -369,9 +369,9 @@ form.addEventListener("submit", async (e) => {
     categorySelect.value = "Trabajo";
     input.focus();
 
-  } catch (error) {
+    } catch (error) {
     setNetworkStatus("No se pudo crear la tarea.", "error");
-    alert("No se pudo crear la tarea: " + error.message);
+    console.error("No se pudo crear la tarea:", error);
   }
 });
 
