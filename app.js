@@ -81,16 +81,20 @@ function setNetworkStatus(message, type = "") {
 
   networkStatus.textContent = message;
 
+  // limpiar clases anteriores
+  networkStatus.className = "mb-4 text-sm font-medium";
+
   if (type === "loading") {
-    networkStatus.style.color = "blue";
+    networkStatus.classList.add("text-blue-500");
   } else if (type === "success") {
-    networkStatus.style.color = "green";
+    networkStatus.classList.add("text-green-500");
   } else if (type === "error") {
-    networkStatus.style.color = "red";
+    networkStatus.classList.add("text-red-500");
   } else {
-    networkStatus.style.color = "black";
+    networkStatus.classList.add("text-slate-700");
   }
 }
+
 /**
  * Crea y añade al DOM una tarjeta visual para representar una tarea.
  * La apariencia del tag de prioridad se determina dinámicamente según la prioridad de la tarea.
