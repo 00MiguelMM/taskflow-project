@@ -201,9 +201,9 @@ function createTaskCard(task) {
   });
 
   checkbox.addEventListener("change", () => {
-    alert("Marcar tareas como completadas aún no está conectado al backend.");
-    checkbox.checked = task.completed;
-  });
+  task.completed = checkbox.checked;
+  renderTasks();
+});
 
   deleteButton.addEventListener("click", async () => {
     try {
