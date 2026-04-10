@@ -401,7 +401,8 @@ summaryButtons.forEach((button) => {
 });
 
 clearCompletedButton.addEventListener("click", () => {
-  alert("Borrar tareas realizadas aún no está conectado al backend.");
+  tasks = tasks.filter(task => !task.completed);
+  renderTasks();
 });
 
 // Botón para cambiar entre modo claro y oscuro
