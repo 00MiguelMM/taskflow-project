@@ -30,11 +30,13 @@ export async function createTask(taskData) {
 }
 
 export async function deleteTask(id) {
-  const response = await fetch(`${API_URL}/${id}`, {
+  const response = await fetch(`${API_URL}?id=${id}`, {
     method: "DELETE",
   });
 
   if (!response.ok) {
     throw new Error(`Error al eliminar tarea: ${response.status}`);
   }
+
+  return response.json();
 }
